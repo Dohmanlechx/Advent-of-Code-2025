@@ -3,7 +3,7 @@ fun main() {
     require(solve(countZeroes = true) == 6770)
 }
 
-fun solve(countZeroes: Boolean): Int {
+private fun solve(countZeroes: Boolean): Int {
     val moves = Reader.input("d01")
     var dial = 50
     var password = 0
