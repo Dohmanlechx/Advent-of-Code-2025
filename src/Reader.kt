@@ -1,31 +1,34 @@
 import java.io.File
 
 object Reader {
-    fun example(path: String, split: String? = "\n") =
-        lines("resources/$path/example", split)
+    fun example(path: String, split: String? = "\n", trim: Boolean = true) =
+        lines("resources/$path/example", split, trim)
 
-    fun input(path: String, split: String? = "\n") =
-        lines("resources/$path/input", split)
+    fun input(path: String, split: String? = "\n", trim: Boolean = true) =
+        lines("resources/$path/input", split, trim)
 
-    private fun lines(path: String, split: String?): List<String> =
+    private fun lines(path: String, split: String?, trim: Boolean): List<String> =
         File(path)
             .readText()
             .replace("\r", "")
-            .run { if (split == null) listOf(this) else split(split).map(String::trim) }
-            .superTrim()
+            .run {
+                if (split == null) {
+                    listOf(this)
+                } else {
+                    split(split).let { if (trim) it.map(String::trim) else it }
+                }
+            }.let {
+                if (trim) it.superTrim() else it
+            }
 
     private fun List<String>.superTrim(): List<String> {
-        val trimmedList = mutableListOf<String>()
         val dirt = "  "
-
-        for (line in this) {
-            var trimmedLine = line
-            while (trimmedLine.contains(dirt)) {
-                trimmedLine = trimmedLine.replace(dirt, " ")
+        return map { line ->
+            var temp = line
+            while (temp.contains(dirt)) {
+                temp = temp.replace(dirt, " ")
             }
-            trimmedList.add(trimmedLine)
+            temp
         }
-
-        return trimmedList
     }
 }
